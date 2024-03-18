@@ -20,3 +20,6 @@ We plan to use the historical weather API from [open-meteo.com](https://open-met
 
 
 ## What will we do with the data?
+
+- Firstly, we will focus our analysis on the London scale with bar graphs highlighting the rainiest, sunniest and cloudiest day and month when taking an average year. We will also use a bar graph for every year to see if there is a lot of variance in our results.
+- Secundly, to prove the point that London is not the rainiest city, we will extend our analysis to the other 19 most popular cities in the world (using Euromonitor's 2018 ranking). We will compare our measures between all of these cities to come up with rankings. It will also be interesting to show how rankings change over time. This will make sure our hypothesis is consistent and not explained by recent factors such as climate change. 
