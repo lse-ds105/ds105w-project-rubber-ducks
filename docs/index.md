@@ -17,7 +17,7 @@ We plan to use the historical weather API from [open-meteo.com](https://open-met
 - It allows you to request data for different time periods and locations and has a variety of both hourly and daily variables.
 - For non-commericial users it has a limit of 10 API calls per day, but we suspect that this shouldn't be a limiting factor for us.
 - The website does also supply a code template for accessing the API using python:
-
+<img src="API_website_screenshot.png">
 
 ## What will we do with the data?
 
