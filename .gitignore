@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 .cache.sqlite
 ./notebooks/.cache.sqlite
+.DS_Store
+./notebooks/.DS_Store
