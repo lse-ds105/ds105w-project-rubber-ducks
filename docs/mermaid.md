@@ -1,29 +1,28 @@
 ``` mermaid
-flowchart TD
+flowchart LR
     A{open.meteo website} --> L((API Requests))
     L --> B[London Dataframe]
     L --> C[City 1 Dataframe]
     L --> D[City ... Dataframe]
     L --> E[City 19 Dataframe]
-    B -.- F(save as .json/.csv file)
-    C -.- F
-    D -.- F
-    E -.- F
-    G{top 20 cities website} -->|css/xpath scraping| H(python list of 20 cities)
-    I{coordinates website} -->|css/xpath scraping| J(python list of coordinates)
-    J -->|merge lists| K(python list of cities and their coordinates)
-    H -->|merge lists| K
+    G{top 20 cities website} -->|scraping| H(python list of 20 cities)
+    I{coordinates website} --> J((API request))
+    H --> J
+    J --> K(python list of dictionaries for coordinates of all cities)
     K --> L
-    B --> M[Final Datframe: 
-    rows = cities
-    columns = weather + perception variables]
+    B --> M[Weather Dataframe: 
+    each row is a time and city]
     C --> M
     D --> M
     E --> M
-    N{perception wesbite} -->|merge?| M
-    M -->|Data manipulation| O(London Visualisations)
-    M -->|Data manipulation| Q(Descriptive Visualisations)
-    M -->|Data manipulation| R(More Complex and Interactive Visualisations)
+    M -.- F(save as json files)
+    N{Google NGRAMS} --> S(json format)
+    S --> |scraping| T(list of frequencies for each search)
+    T --> U[NGRAMS Dataframe]
+    U -.- F
+    M --> V[Final Database]
+    U --> V
+    V -->|Data manipulation| O(London Visualisations)
+    V -->|Data manipulation| Q(Descriptive Visualisations)
+    V -->|Data manipulation| R(More Complex and Interactive Visualisations)
 ```
-
-
