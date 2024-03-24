@@ -1,0 +1,55 @@
+---
+title: "Rubber Ducks weather analysis project"
+authors: "Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom" 
+format:
+  revealjs: 
+    theme: default
+---
+# What is our project about?
+
+## Aims
+- To answer analyse the validity of the statement,
+
+> "London is a rainy city."
+---
+# How did we get the data?
+---
+## Scraping the 20 most visited cities
+```python
+import requests
+from scrapy import Selector
+cities_url = "https://travelness.com/most-visited-cities-in-the-world" # URL of the page with the list of cities
+
+response = requests.get(cities_url)
+sel = Selector(response)
+
+cities = sel.xpath("//table//tr/td[2]/text()").getall()
+```
+This gives returns a list of the top 20 most visited cities:
+
+```
+['Bangkok', 'Paris', 'London', 'Dubai', 'Singapore', 'Kuala Lumpur', 'New York', 'Istanbul', 'Tokyo', 'Antalya', 'Seoul', 'Osaka', 'Makkah', 'Phuket', 'Pattaya', 'Milan', 'Barcelona', 'Palma de Mallorca', 'Bali', 'Hong Kong SAR']
+```
+## Geocoding the cities
+The open-meteo API requires that we input coordinates and so we first had to take the city names and geocode them using the OpenStreetMaps API.
+```python
+from geopy.geocoders import Nominatim
+
+def geocode_city(city):
+    geolocator = Nominatim(user_agent="my_geocoder")
+    location = geolocator.geocode(city)
+    return {"city": city, "latitude": location.latitude, "longitude": location.longitude}
+
+def geocode_cities(city_list):
+    geocoded_cities = [geocode_city(city) for city in city_list if geocode_city(city)]
+    return geocoded_cities
+
+# Geocode the list of cities
+geocoded_cities = geocode_cities(cities)
+```
+This returns a list of dictionaries, here is one of the items as an example:
+```
+{"city": "Paris", "latitude": 48.8534951, "longitude": 2.3483915}
+```
+
+# Thanks for listening.
