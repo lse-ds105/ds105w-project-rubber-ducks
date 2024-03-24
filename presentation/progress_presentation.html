@@ -401,19 +401,29 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 </div>
 
 </section>
-<section>
 <section id="what-is-our-project-about" class="title-slide slide level1 center">
 <h1>What is our project about?</h1>
 
 </section>
-<section id="aims" class="slide level2">
-<h2>Aims</h2>
-<ul>
-<li>To answer analyse the validity of the statement,</li>
-</ul>
-<blockquote>
-<p>“London is a rainy city.”</p>
-</blockquote>
+
+<section id="london-is-a-rainy-city." class="title-slide slide level1 center">
+<h1>“<em>London is a rainy city.</em>”</h1>
+
+</section>
+
+<section>
+<section id="how-did-we-get-the-data" class="title-slide slide level1 center">
+<h1>How did we get the data?</h1>
+
+</section>
+<section id="steps" class="slide level2">
+<h2>Steps</h2>
+<ol type="1">
+<li>Getting our list of cities.</li>
+<li>Preparing the input to the open-meteo API call.</li>
+<li>Getting the data from the open-meteo API.</li>
+<li>Transforming the data into our desired format.</li>
+</ol>
 </section>
 <section id="scraping-the-20-most-visited-cities" class="slide level2">
 <h2>Scraping the 20 most visited cities</h2>
@@ -446,6 +456,34 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <span id="cb3-13"><a href=""></a>geocoded_cities <span class="op">=</span> geocode_cities(cities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This returns a list of dictionaries, here is one of the items as an example:</p>
 <pre><code>{"city": "Paris", "latitude": 48.8534951, "longitude": 2.3483915}</code></pre>
+</section>
+<section id="preparing-the-open-meteo-api-call" class="slide level2">
+<h2>Preparing the open-meteo API call</h2>
+<ul>
+<li>The open-meteo API takes in a dictionary of parameters.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>params <span class="op">=</span> {</span>
+<span id="cb5-2"><a href=""></a>    <span class="st">"latitude"</span>: [city[<span class="st">"latitude"</span>] <span class="cf">for</span> city <span class="kw">in</span> geocoded_cities],</span>
+<span id="cb5-3"><a href=""></a>    <span class="st">"longitude"</span>: [city[<span class="st">"longitude"</span>] <span class="cf">for</span> city <span class="kw">in</span> geocoded_cities],</span>
+<span id="cb5-4"><a href=""></a>    <span class="st">"start_date"</span>: <span class="st">"1940-01-01"</span>,</span>
+<span id="cb5-5"><a href=""></a>    <span class="st">"end_date"</span>: <span class="st">"2023-12-31"</span>,</span>
+<span id="cb5-6"><a href=""></a>    <span class="st">"daily"</span>: daily_variables_of_interest,</span>
+<span id="cb5-7"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>where we defined our <code>daily_variables_of_interest</code> as a list.</p>
+</section>
+<section id="the-actual-api-call" class="slide level2">
+<h2>The actual API call</h2>
+<p>Here we use the code provided in the open-meteo API documentation to get a list of responses for each city.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href=""></a><span class="co"># Setup the Open-Meteo API client with cache and retry on error</span></span>
+<span id="cb6-2"><a href=""></a>cache_session <span class="op">=</span> requests_cache.CachedSession(<span class="st">'.cache'</span>, expire_after <span class="op">=</span> <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb6-3"><a href=""></a>retry_session <span class="op">=</span> retry(cache_session, retries <span class="op">=</span> <span class="dv">5</span>, backoff_factor <span class="op">=</span> <span class="fl">0.2</span>)</span>
+<span id="cb6-4"><a href=""></a>openmeteo <span class="op">=</span> openmeteo_requests.Client(session <span class="op">=</span> retry_session)</span>
+<span id="cb6-5"><a href=""></a></span>
+<span id="cb6-6"><a href=""></a>url <span class="op">=</span> <span class="st">"https://archive-api.open-meteo.com/v1/archive"</span></span>
+<span id="cb6-7"><a href=""></a>responses <span class="op">=</span> openmeteo.weather_api(url, params<span class="op">=</span>params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="transforming-the-data-into-our-desired-format" class="slide level2">
+<h2>Transforming the data into our desired format</h2>
 </section></section>
 <section id="thanks-for-listening." class="title-slide slide level1 center">
 <h1>Thanks for listening.</h1>
