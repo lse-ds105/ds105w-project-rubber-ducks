@@ -7,13 +7,16 @@ format:
 ---
 # What is our project about?
 
-## Aims
-- To answer analyse the validity of the statement,
+# "_London is a rainy city._"
 
-> "London is a rainy city."
+# How did we get the weather data?
 ---
-# How did we get the data?
----
+## Steps
+1. Getting our list of cities.
+2. Preparing the input to the open-meteo API call.
+3. Getting the data from the open-meteo API.
+4. Transforming the data into our desired format.
+
 ## Scraping the 20 most visited cities
 ```python
 import requests
@@ -51,5 +54,38 @@ This returns a list of dictionaries, here is one of the items as an example:
 ```
 {"city": "Paris", "latitude": 48.8534951, "longitude": 2.3483915}
 ```
+## Preparing the open-meteo API call
+- The open-meteo API takes in a dictionary of parameters.
+```python
+params = {
+    "latitude": [city["latitude"] for city in geocoded_cities],
+    "longitude": [city["longitude"] for city in geocoded_cities],
+    "start_date": "1940-01-01",
+    "end_date": "2023-12-31",
+    "daily": daily_variables_of_interest,
+}
+```
+where we defined our ```daily_variables_of_interest``` as a list.
+
+## The actual API call
+Here we use the code provided in the open-meteo API documentation to get a list of responses for each city.
+
+```python
+# Setup the Open-Meteo API client with cache and retry on error
+cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
+retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+openmeteo = openmeteo_requests.Client(session = retry_session)
+
+url = "https://archive-api.open-meteo.com/v1/archive"
+responses = openmeteo.weather_api(url, params=params)
+```
+## Transforming the data into our desired format
+
+## Next steps
+- Create a database connection.
+- Ensure the data is saved in efficient formats as 600,000 pieces of data is a lot.
+
+# What have we found so far?
+
 
 # Thanks for listening.
