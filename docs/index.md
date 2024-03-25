@@ -337,11 +337,11 @@ Dataframe with over 600,000 rows.
 </table>
 </div>
 
+Summary statistics for London data:
+
 ```python
 merged_df[merged_df['city']=='London'].describe()
 ```
-
-Summary  statistics for London data:
 
 <div style="overflow-x: auto;">
 <style scoped>
