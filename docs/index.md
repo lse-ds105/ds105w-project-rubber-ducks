@@ -1,8 +1,7 @@
----
-title: "Rubber Ducks 🦆 weather analysis project"
-authors: "Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom" 
-format: revealjs
----
+# Rubber Ducks 🦆 weather analysis project
+
+authors: Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
+
 # What is our project about?
 
 ### "_London is a rainy city._"
