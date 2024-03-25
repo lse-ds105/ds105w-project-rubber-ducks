@@ -16,9 +16,9 @@ flowchart LR
     E --> M
     M -.- F(save as .csv files)
     N{Google NGRAMS} --> S(json format)
-    S -->|scraping| T(list of frequencies for each search)
-    T --> U[NGRAMS Dataframe]
-    U --> F
+    S -->|scraping| T[dataframe of appearance % for each query]
+    T --> |sum by years| U[NGRAMS Dataframe]
+    U -.- F
     M --> V[Final SQL Database]
     U --> V
     V -->|Data manipulation| O(London Visualisations)
