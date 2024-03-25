@@ -4,11 +4,6 @@ authors: "Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom"
 format:
   revealjs:
     theme: default
-output:
-  revealjs::revealjs_presentation:
-    controls: true
-    progress: true
-    history: true
 ---
 # What is our project about?
 
