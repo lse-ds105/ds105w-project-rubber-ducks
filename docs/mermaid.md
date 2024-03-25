@@ -17,8 +17,8 @@ flowchart LR
     E --> M
     M -.- F(save as json files)
     N{Google NGRAMS} --> S(json format)
-    S --> |scraping| T(list of frequencies for each search)
-    T --> U[NGRAMS Dataframe]
+    S --> |scraping| T[dataframe of appearance % for each query]
+    T --> |sum by years| U[NGRAMS Dataframe]
     U -.- F
     M --> V[Final Database]
     U --> V
