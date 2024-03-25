@@ -1,6 +1,6 @@
 # Rubber Ducks 🦆 weather analysis project
 
-authors: Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
+Authors: Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 
 # What is our project about?
 
