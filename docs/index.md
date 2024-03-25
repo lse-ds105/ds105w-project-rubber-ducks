@@ -493,12 +493,12 @@ Scraping method:
 
 # What have we found so far?
 
-<img src="./docs/visualisations/daily_precip_sum_dot_plot.png">
+<img src="./visualisations/daily_precip_sum_dot_plot.png">
 
-<img src="./docs/visualisations/daily_precip_hours_plot.png">
+<img src="./visualisations/daily_precip_hours_plot.png">
 
-<img src="./docs/visualisations/yearly_precip_hours_plot.png">
+<img src="./visualisations/yearly_precip_hours_plot.png">
 
-<img src="./docs/visualisations/number_rainy_days_london.png">
+<img src="./visualisations/number_rainy_days_london.png">
 
-# Thanks for listening 🦆.
+### Thanks for listening 🦆.
