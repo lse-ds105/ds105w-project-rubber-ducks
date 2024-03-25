@@ -10,7 +10,7 @@
 <link href="progress_presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.551">
 
-  <title>Rubber Ducks weather analysis project</title>
+  <title>Rubber Ducks 🦆 weather analysis project</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -384,13 +384,16 @@
       margin-right: 0; 
     }
   </style>
+  <script src="progress_presentation_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="progress_presentation_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="progress_presentation_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Rubber Ducks weather analysis project</h1>
+  <h1 class="title">Rubber Ducks 🦆 weather analysis project</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -411,9 +414,49 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 
 </section>
 
+<section id="data-pipeline-diagram" class="title-slide slide level1 center">
+<h1>Data Pipeline Diagram</h1>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A{open-meteo} --&gt; L((open-meteo API Requests))
+    L --&gt; B[London Dataframe]
+    L --&gt; C[City 1 Dataframe]
+    L --&gt; D[City ... Dataframe]
+    L --&gt; E[City 19 Dataframe]
+    G{top 20 cities website} --&gt;|scraping| H(python list of 20 cities)
+    I{OpenStreetMaps} --&gt; J((OSM API request))
+    H --&gt; J
+    J --&gt; K(python list of dictionaries for coordinates of all cities)
+    K --&gt; L
+    B --&gt; M[Weather Dataframe:&lt;br&gt;each row is a time and city]
+    C --&gt; M
+    D --&gt; M
+    E --&gt; M
+    M --&gt; F(save as json files)
+    N{Google NGRAMS} --&gt; S(json format)
+    S --&gt;|scraping| T(list of frequencies for each search)
+    T --&gt; U[NGRAMS Dataframe]
+    U --&gt; F
+    M --&gt; V[Final Database]
+    U --&gt; V
+    V --&gt;|Data manipulation| O(London Visualisations)
+    V --&gt;|Data manipulation| Q(Descriptive Visualisations)
+    V --&gt;|Data manipulation| R(More Complex and Interactive Visualisations)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+
 <section>
-<section id="how-did-we-get-the-data" class="title-slide slide level1 center">
-<h1>How did we get the data?</h1>
+<section id="how-did-we-get-the-weather-data" class="title-slide slide level1 center">
+<h1>How did we get the weather data?</h1>
 
 </section>
 <section id="steps" class="slide level2">
@@ -435,7 +478,7 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <span id="cb1-6"><a href=""></a>sel <span class="op">=</span> Selector(response)</span>
 <span id="cb1-7"><a href=""></a></span>
 <span id="cb1-8"><a href=""></a>cities <span class="op">=</span> sel.xpath(<span class="st">"//table//tr/td[2]/text()"</span>).getall()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This gives returns a list of the top 20 most visited cities:</p>
+<p>This returns a list of the top 20 most visited cities:</p>
 <pre><code>['Bangkok', 'Paris', 'London', 'Dubai', 'Singapore', 'Kuala Lumpur', 'New York', 'Istanbul', 'Tokyo', 'Antalya', 'Seoul', 'Osaka', 'Makkah', 'Phuket', 'Pattaya', 'Milan', 'Barcelona', 'Palma de Mallorca', 'Bali', 'Hong Kong SAR']</code></pre>
 </section>
 <section id="geocoding-the-cities" class="slide level2">
@@ -484,7 +527,774 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 </section>
 <section id="transforming-the-data-into-our-desired-format" class="slide level2">
 <h2>Transforming the data into our desired format</h2>
+<p>Once we retrieved our API responses, we had to manipulate them into a useable format the API call returned a list of responses that looked like this:</p>
+<pre><code>&lt;openmeteo_sdk.WeatherApiResponse.WeatherApiResponse at 0x7fd78b1f7d30&gt;</code></pre>
+<p>This is obviously not very useful.</p>
+</section>
+<section id="open-meteo-api-documentation-and-example-code" class="slide level2">
+<h2>Open-meteo API documentation and example code</h2>
+<p>The open-meteo API does provide you with useable code for returning pandas dataframes for each city, but their code was not desirable for a few reasons: - Returned a list of dataframes for each city. - Each dataframe had no way of distinguishing it from the other dataframes meaning that if we merged them then we wouldn’t know which datapoints correspond to which cities.</p>
+</section>
+<section id="how-did-we-overcome-this" class="slide level2">
+<h2>How did we overcome this?</h2>
+<p>We wrote a custom function using the documentation that processes each response and includes a column highlighting the city it corresponds to, only then did we merge the dataframes.</p>
+</section>
+<section id="how-did-we-overcome-this-1" class="slide level2">
+<h2>How did we overcome this?</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href=""></a><span class="im">import</span> openmeteo_requests</span>
+<span id="cb8-3"><a href=""></a></span>
+<span id="cb8-4"><a href=""></a><span class="kw">def</span> process_response(response, geocoded_cities, i):</span>
+<span id="cb8-5"><a href=""></a>    daily <span class="op">=</span> response.Daily()</span>
+<span id="cb8-6"><a href=""></a>    temperature_2m_max <span class="op">=</span> daily.Variables(<span class="dv">0</span>).ValuesAsNumpy()</span>
+<span id="cb8-7"><a href=""></a>    temperature_2m_min <span class="op">=</span> daily.Variables(<span class="dv">1</span>).ValuesAsNumpy()</span>
+<span id="cb8-8"><a href=""></a>    temperature_2m_mean <span class="op">=</span> daily.Variables(<span class="dv">2</span>).ValuesAsNumpy()</span>
+<span id="cb8-9"><a href=""></a>    daylight_duration <span class="op">=</span> daily.Variables(<span class="dv">3</span>).ValuesAsNumpy()</span>
+<span id="cb8-10"><a href=""></a>    sunshine_duration <span class="op">=</span> daily.Variables(<span class="dv">4</span>).ValuesAsNumpy()</span>
+<span id="cb8-11"><a href=""></a>    precipitation_sum <span class="op">=</span> daily.Variables(<span class="dv">5</span>).ValuesAsNumpy()</span>
+<span id="cb8-12"><a href=""></a>    rain_sum <span class="op">=</span> daily.Variables(<span class="dv">6</span>).ValuesAsNumpy()</span>
+<span id="cb8-13"><a href=""></a>    precipitation_hours <span class="op">=</span> daily.Variables(<span class="dv">7</span>).ValuesAsNumpy()</span>
+<span id="cb8-14"><a href=""></a></span>
+<span id="cb8-15"><a href=""></a>    daily_data <span class="op">=</span> {</span>
+<span id="cb8-16"><a href=""></a>        <span class="st">"date"</span>: pd.date_range(</span>
+<span id="cb8-17"><a href=""></a>            start<span class="op">=</span>pd.to_datetime(daily.Time(), unit<span class="op">=</span><span class="st">"s"</span>, utc<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb8-18"><a href=""></a>            end<span class="op">=</span>pd.to_datetime(daily.TimeEnd(), unit<span class="op">=</span><span class="st">"s"</span>, utc<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb8-19"><a href=""></a>            freq<span class="op">=</span>pd.Timedelta(seconds<span class="op">=</span>daily.Interval()),</span>
+<span id="cb8-20"><a href=""></a>            inclusive<span class="op">=</span><span class="st">"left"</span></span>
+<span id="cb8-21"><a href=""></a>        ).date</span>
+<span id="cb8-22"><a href=""></a>    }</span>
+<span id="cb8-23"><a href=""></a></span>
+<span id="cb8-24"><a href=""></a>    daily_data[<span class="st">"city"</span>] <span class="op">=</span> geocoded_cities[i][<span class="st">'city'</span>]</span>
+<span id="cb8-25"><a href=""></a>    daily_data[<span class="st">"temperature_2m_max"</span>] <span class="op">=</span> temperature_2m_max</span>
+<span id="cb8-26"><a href=""></a>    daily_data[<span class="st">"temperature_2m_min"</span>] <span class="op">=</span> temperature_2m_min</span>
+<span id="cb8-27"><a href=""></a>    daily_data[<span class="st">"temperature_2m_mean"</span>] <span class="op">=</span> temperature_2m_mean</span>
+<span id="cb8-28"><a href=""></a>    daily_data[<span class="st">"daylight_duration"</span>] <span class="op">=</span> daylight_duration</span>
+<span id="cb8-29"><a href=""></a>    daily_data[<span class="st">"sunshine_duration"</span>] <span class="op">=</span> sunshine_duration</span>
+<span id="cb8-30"><a href=""></a>    daily_data[<span class="st">"precipitation_sum"</span>] <span class="op">=</span> precipitation_sum</span>
+<span id="cb8-31"><a href=""></a>    daily_data[<span class="st">"rain_sum"</span>] <span class="op">=</span> rain_sum</span>
+<span id="cb8-32"><a href=""></a>    daily_data[<span class="st">"precipitation_hours"</span>] <span class="op">=</span> precipitation_hours</span>
+<span id="cb8-33"><a href=""></a></span>
+<span id="cb8-34"><a href=""></a>    <span class="cf">return</span> pd.DataFrame(data<span class="op">=</span>daily_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>dataframes_list <span class="op">=</span> [cf.process_response(response, geocoded_cities, i) <span class="cf">for</span> i, response <span class="kw">in</span> <span class="bu">enumerate</span>(responses)]</span>
+<span id="cb9-2"><a href=""></a>merged_df <span class="op">=</span> pd.concat(dataframes_list, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-3"><a href=""></a>merged_df.to_csv(<span class="st">"../data/weather_data.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="final-outcome" class="slide level2">
+<h2>Final Outcome</h2>
+<div style="overflow-x: auto;">
+<style scoped="">
+    .dataframe {
+        font-size: 13px; /* Adjust font size */
+    }
+    .dataframe tbody tr th,
+    .dataframe tbody tr td {
+        padding: 6px; /* Adjust padding */
+    }
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+date
+</th>
+<th>
+city
+</th>
+<th>
+temperature_2m_max
+</th>
+<th>
+temperature_2m_min
+</th>
+<th>
+temperature_2m_mean
+</th>
+<th>
+daylight_duration
+</th>
+<th>
+sunshine_duration
+</th>
+<th>
+precipitation_sum
+</th>
+<th>
+rain_sum
+</th>
+<th>
+precipitation_hours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1940-01-01
+</td>
+<td>
+Bangkok
+</td>
+<td>
+27.061001
+</td>
+<td>
+14.711
+</td>
+<td>
+20.571415
+</td>
+<td>
+40775.191406
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+<td>
+NaN
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1940-01-02
+</td>
+<td>
+Bangkok
+</td>
+<td>
+26.961000
+</td>
+<td>
+14.111
+</td>
+<td>
+20.248503
+</td>
+<td>
+40786.789062
+</td>
+<td>
+38087.828125
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+1940-01-03
+</td>
+<td>
+Bangkok
+</td>
+<td>
+26.261000
+</td>
+<td>
+13.911
+</td>
+<td>
+19.719332
+</td>
+<td>
+40799.343750
+</td>
+<td>
+38101.910156
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+1940-01-04
+</td>
+<td>
+Bangkok
+</td>
+<td>
+27.961000
+</td>
+<td>
+14.161
+</td>
+<td>
+20.523499
+</td>
+<td>
+40812.839844
+</td>
+<td>
+38117.046875
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+1940-01-05
+</td>
+<td>
+Bangkok
+</td>
+<td>
+28.661001
+</td>
+<td>
+14.211
+</td>
+<td>
+21.300581
+</td>
+<td>
+40827.265625
+</td>
+<td>
+38133.210938
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+1940-01-06
+</td>
+<td>
+Bangkok
+</td>
+<td>
+29.911001
+</td>
+<td>
+15.361
+</td>
+<td>
+22.540167
+</td>
+<td>
+40842.601562
+</td>
+<td>
+38150.390625
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+6
+</th>
+<td>
+1940-01-07
+</td>
+<td>
+Bangkok
+</td>
+<td>
+30.261000
+</td>
+<td>
+15.461
+</td>
+<td>
+22.473501
+</td>
+<td>
+40858.835938
+</td>
+<td>
+38168.574219
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+7
+</th>
+<td>
+1940-01-08
+</td>
+<td>
+Bangkok
+</td>
+<td>
+30.961000
+</td>
+<td>
+16.961
+</td>
+<td>
+23.983917
+</td>
+<td>
+40875.949219
+</td>
+<td>
+38187.718750
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+8
+</th>
+<td>
+1940-01-09
+</td>
+<td>
+Bangkok
+</td>
+<td>
+30.961000
+</td>
+<td>
+17.511
+</td>
+<td>
+24.306831
+</td>
+<td>
+40893.960938
+</td>
+<td>
+38207.929688
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+<tr>
+<th>
+9
+</th>
+<td>
+1940-01-10
+</td>
+<td>
+Bangkok
+</td>
+<td>
+30.561001
+</td>
+<td>
+19.361
+</td>
+<td>
+24.577669
+</td>
+<td>
+40913.089844
+</td>
+<td>
+37394.550781
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+<td>
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="final-outcome-1" class="slide level2">
+<h2>Final Outcome</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a>merged_df[merged_df[<span class="st">'city'</span>]<span class="op">==</span><span class="st">'London'</span>].describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Summary statistics for London data:</p>
+<div style="overflow-x: auto;">
+<style scoped="">
+    .dataframe {
+        font-size: 13px; /* Adjust font size */
+    }
+    .dataframe tbody tr th,
+    .dataframe tbody tr td {
+        padding: 6px; /* Adjust padding */
+    }
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+temperature_2m_max
+</th>
+<th>
+temperature_2m_min
+</th>
+<th>
+temperature_2m_mean
+</th>
+<th>
+daylight_duration
+</th>
+<th>
+sunshine_duration
+</th>
+<th>
+precipitation_sum
+</th>
+<th>
+rain_sum
+</th>
+<th>
+precipitation_hours
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+count
+</th>
+<td>
+30681.000000
+</td>
+<td>
+30681.000000
+</td>
+<td>
+30681.000000
+</td>
+<td>
+30681.000000
+</td>
+<td>
+30680.000000
+</td>
+<td>
+30680.000000
+</td>
+<td>
+30680.000000
+</td>
+<td>
+30681.000000
+</td>
+</tr>
+<tr>
+<th>
+mean
+</th>
+<td>
+13.774742
+</td>
+<td>
+6.729281
+</td>
+<td>
+10.306868
+</td>
+<td>
+44177.980469
+</td>
+<td>
+25653.326172
+</td>
+<td>
+1.691261
+</td>
+<td>
+1.642960
+</td>
+<td>
+3.851146
+</td>
+</tr>
+<tr>
+<th>
+std
+</th>
+<td>
+6.194537
+</td>
+<td>
+5.271986
+</td>
+<td>
+5.609030
+</td>
+<td>
+10799.614258
+</td>
+<td>
+16077.271484
+</td>
+<td>
+3.265338
+</td>
+<td>
+3.221255
+</td>
+<td>
+5.007728
+</td>
+</tr>
+<tr>
+<th>
+min
+</th>
+<td>
+-6.454500
+</td>
+<td>
+-15.904500
+</td>
+<td>
+-8.721166
+</td>
+<td>
+28170.857422
+</td>
+<td>
+0.000000
+</td>
+<td>
+0.000000
+</td>
+<td>
+0.000000
+</td>
+<td>
+0.000000
+</td>
+</tr>
+<tr>
+<th>
+25%
+</th>
+<td>
+9.195499
+</td>
+<td>
+2.795500
+</td>
+<td>
+6.139249
+</td>
+<td>
+33813.128906
+</td>
+<td>
+12710.077148
+</td>
+<td>
+0.000000
+</td>
+<td>
+0.000000
+</td>
+<td>
+0.000000
+</td>
+</tr>
+<tr>
+<th>
+50%
+</th>
+<td>
+13.745500
+</td>
+<td>
+6.995500
+</td>
+<td>
+10.437167
+</td>
+<td>
+44288.531250
+</td>
+<td>
+25880.933594
+</td>
+<td>
+0.200000
+</td>
+<td>
+0.200000
+</td>
+<td>
+1.000000
+</td>
+</tr>
+<tr>
+<th>
+75%
+</th>
+<td>
+18.545500
+</td>
+<td>
+10.945499
+</td>
+<td>
+14.853833
+</td>
+<td>
+54571.656250
+</td>
+<td>
+38797.984375
+</td>
+<td>
+1.900000
+</td>
+<td>
+1.800000
+</td>
+<td>
+7.000000
+</td>
+</tr>
+<tr>
+<th>
+max
+</th>
+<td>
+37.952000
+</td>
+<td>
+20.851999
+</td>
+<td>
+29.131165
+</td>
+<td>
+59899.007812
+</td>
+<td>
+55052.890625
+</td>
+<td>
+39.900002
+</td>
+<td>
+39.900002
+</td>
+<td>
+24.000000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="next-steps" class="slide level2">
+<h2>Next steps</h2>
+<ul>
+<li>Create a database connection.</li>
+<li>Ensure the data is saved in efficient formats as 600,000 pieces of data is a lot.</li>
+</ul>
 </section></section>
+<section id="what-have-we-found-so-far" class="title-slide slide level1 center">
+<h1>What have we found so far?</h1>
+
+</section>
+
 <section id="thanks-for-listening." class="title-slide slide level1 center">
 <h1>Thanks for listening.</h1>
 <div class="quarto-auto-generated-content">
