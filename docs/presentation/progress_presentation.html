@@ -436,11 +436,11 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
     C --&gt; M
     D --&gt; M
     E --&gt; M
-    M --&gt; F(save as .csv files)
+    M -.- F(save as .csv files)
     N{Google NGRAMS} --&gt; S(json format)
-    S --&gt;|scraping| T(list of frequencies for each search)
-    T --&gt; U[NGRAMS Dataframe]
-    U --&gt; F
+    S --&gt;|scraping| T[dataframe of appearance % for each query]
+    T --&gt; |sum by years| U[NGRAMS Dataframe]
+    U -.- F
     M --&gt; V[Final SQL Database]
     U --&gt; V
     V --&gt;|Data manipulation| O(London Visualisations)

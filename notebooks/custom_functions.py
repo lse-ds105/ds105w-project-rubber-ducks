@@ -1,5 +1,7 @@
 import pandas as pd
 import openmeteo_requests
+import requests
+import urllib
 
 def process_response(response, geocoded_cities, i):
     daily = response.Daily()
@@ -32,3 +34,24 @@ def process_response(response, geocoded_cities, i):
     daily_data["precipitation_hours"] = precipitation_hours
 
     return pd.DataFrame(data=daily_data)
+
+def runQuery(query):
+    # converting a regular string to  the standard URL format  
+    query_url = urllib.parse.quote(query) 
+
+    # creating the URL 
+    url = 'https://books.google.com/ngrams/json?content=' + query_url +'&year_start=1940&corpus=en-2019&smoothing=3' 
+    response = requests.get(url) 
+
+    # extracting the json data from the response we got 
+    output = response.json()
+
+
+    # Extracting the timeseries
+    timeseries = output[0]['timeseries']
+    # Creating a DataFrame with year, value, and query
+    years = list(range(1940, 2020))
+    df_query = pd.DataFrame({'query': query, 'Year': years, 'Appearence %': timeseries})
+
+    # Displaying the final DataFrame
+    return df_query
