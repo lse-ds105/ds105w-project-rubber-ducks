@@ -454,6 +454,46 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 </div>
 </section>
 
+<section id="where-are-we-in-the-data-pipeline-journey" class="title-slide slide level1 center">
+<h1>Where are we in the data pipeline journey?</h1>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A{open-meteo} --&gt; L((open-meteo API Requests))
+    L --&gt; B[London Dataframe]
+    L --&gt; C[City 1 Dataframe]
+    L --&gt; D[City ... Dataframe]
+    L --&gt; E[City 19 Dataframe]
+    G{top 20 cities website} --&gt;|scraping| H(python list of 20 cities)
+    I{OpenStreetMaps} --&gt; J((OSM API request))
+    H --&gt; J
+    J --&gt; K(python list of dictionaries for coordinates of all cities)
+    K --&gt; L
+    B --&gt; M[&lt;b&gt;Weather Dataframe&lt;/b&gt;:&lt;br&gt;each row is a time and city]
+    C --&gt; M
+    D --&gt; M
+    E --&gt; M
+    M --&gt; F(save as json files)
+    N{Google NGRAMS} --&gt; S(json format)
+    S --&gt;|scraping| T(list of frequencies for each search)
+    T --&gt; U[NGRAMS Dataframe]
+    U --&gt; F
+    M --&gt; V[Final Database]
+    U --&gt; V
+    V --&gt;|Data manipulation| O(London Visualisations)
+    V --&gt;|Data manipulation| Q(Descriptive Visualisations)
+    V --&gt;|Data manipulation| R(More Complex and Interactive Visualisations)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+
 <section>
 <section id="how-did-we-get-the-weather-data" class="title-slide slide level1 center">
 <h1>How did we get the weather data?</h1>
@@ -1286,8 +1326,8 @@ max
 <section id="next-steps" class="slide level2">
 <h2>Next steps</h2>
 <ul>
-<li>Create a database connection.</li>
-<li>Ensure the data is saved in efficient formats as 600,000 pieces of data is a lot.</li>
+<li>Store the data as a database.</li>
+<li>Adjust the datatypes of each column to be most appropriate and efficient because 600,000 pieces of data is a lot.</li>
 </ul>
 </section></section>
 <section id="what-have-we-found-so-far" class="title-slide slide level1 center">
