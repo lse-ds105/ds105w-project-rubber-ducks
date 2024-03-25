@@ -2,11 +2,13 @@
 title: "Rubber Ducks 🦆 weather analysis project"
 authors: "Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom" 
 format:
-  revealjs: 
+  revealjs:
     theme: default
-project:
-  type: website
-  output-dir: docs
+output:
+  revealjs::revealjs_presentation:
+    controls: true
+    progress: true
+    history: true
 ---
 # What is our project about?
 

@@ -1,6 +1,0 @@
-render:
-  output-dir: '..'
-
-project:
-  type: website
-  output-dir: '..'
