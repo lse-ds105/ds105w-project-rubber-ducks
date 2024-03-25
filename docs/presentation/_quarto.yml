@@ -1,0 +1,16 @@
+project:
+  type: website
+  output-dir: '..'
+website:
+  title: "Docs"
+  navbar:
+    left:
+      - href: progress_presentation.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
