@@ -4,6 +4,9 @@ authors: "Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom"
 format:
   revealjs: 
     theme: default
+project:
+  type: website
+  output-dir: docs
 ---
 # What is our project about?
 
@@ -480,11 +483,32 @@ Scraping method:
 - Create a dataframe for each query and merge them.
 - For analysis purposes, we summed the frequencies to give a general idea of the perception per year.
 
+## Google NGRAMS
+
+|   | Year | Appearence %    |
+|---|------|-----------------|
+| 0 | 1940 | 2.731485e-09    |
+| 1 | 1941 | 2.756745e-09    |
+| 2 | 1942 | 2.743879e-09    |
+| 3 | 1943 | 2.774656e-09    |
+| 4 | 1944 | 2.788329e-09    |
+
 ## Next steps
 - Store the data as a database.
 - Adjust the datatypes of each column to be most appropriate and efficient because 6,000,000 pieces of data is a lot.
 
 # What have we found so far?
+---
 
+<img src="./visualisations/daily_precip_sum_dot_plot.png">
+---
 
-# Thanks for listening.
+<img src="./visualisations/daily_precip_hours_plot.png">
+---
+
+<img src="./visualisations/yearly_precip_hours_plot.png">
+---
+
+<img src="./visualisations/number_rainy_days_london.png">
+
+# Thanks for listening 🦆.
