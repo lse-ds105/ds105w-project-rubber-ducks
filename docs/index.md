@@ -8,7 +8,7 @@ Authors: Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 
 ## Data Pipeline Diagram
 
-```mermaid
+```{mermaid}
 flowchart LR
     A{open-meteo} --> L((open-meteo API Requests))
     L --> B[London Dataframe]
