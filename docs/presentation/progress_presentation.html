@@ -409,13 +409,13 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 
 </section>
 
+<section>
 <section id="london-is-a-rainy-city." class="title-slide slide level1 center">
 <h1>“<em>London is a rainy city.</em>”</h1>
 
 </section>
-
-<section id="data-pipeline-diagram" class="title-slide slide level1 center">
-<h1>Data Pipeline Diagram</h1>
+<section id="data-pipeline-diagram" class="slide level2">
+<h2>Data Pipeline Diagram</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -452,26 +452,11 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 </div>
 </div>
 </div>
-</section>
-
-<section id="where-are-we-in-the-data-pipeline-journey" class="title-slide slide level1 center">
-<h1>Where are we in the data pipeline journey?</h1>
-
-</section>
-
+</section></section>
 <section>
 <section id="how-did-we-get-the-weather-data" class="title-slide slide level1 center">
 <h1>How did we get the weather data?</h1>
 
-</section>
-<section id="steps" class="slide level2">
-<h2>Steps</h2>
-<ol type="1">
-<li>Getting our list of cities.</li>
-<li>Preparing the input to the open-meteo API call.</li>
-<li>Getting the data from the open-meteo API.</li>
-<li>Transforming the data into our desired format.</li>
-</ol>
 </section>
 <section id="scraping-the-20-most-visited-cities" class="slide level2">
 <h2>Scraping the 20 most visited cities</h2>
@@ -502,14 +487,15 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <span id="cb3-11"><a href=""></a></span>
 <span id="cb3-12"><a href=""></a><span class="co"># Geocode the list of cities</span></span>
 <span id="cb3-13"><a href=""></a>geocoded_cities <span class="op">=</span> geocode_cities(cities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="geocoding-the-cities-1" class="slide level2">
+<h2>Geocoding the cities</h2>
 <p>This returns a list of dictionaries, here is one of the items as an example:</p>
 <pre><code>{"city": "Paris", "latitude": 48.8534951, "longitude": 2.3483915}</code></pre>
 </section>
 <section id="preparing-the-open-meteo-api-call" class="slide level2">
 <h2>Preparing the open-meteo API call</h2>
-<ul>
-<li>The open-meteo API takes in a dictionary of parameters.</li>
-</ul>
+<p>The open-meteo API takes in a dictionary of parameters.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a>params <span class="op">=</span> {</span>
 <span id="cb5-2"><a href=""></a>    <span class="st">"latitude"</span>: [city[<span class="st">"latitude"</span>] <span class="cf">for</span> city <span class="kw">in</span> geocoded_cities],</span>
 <span id="cb5-3"><a href=""></a>    <span class="st">"longitude"</span>: [city[<span class="st">"longitude"</span>] <span class="cf">for</span> city <span class="kw">in</span> geocoded_cities],</span>
@@ -517,7 +503,6 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <span id="cb5-5"><a href=""></a>    <span class="st">"end_date"</span>: <span class="st">"2023-12-31"</span>,</span>
 <span id="cb5-6"><a href=""></a>    <span class="st">"daily"</span>: daily_variables_of_interest,</span>
 <span id="cb5-7"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>where we defined our <code>daily_variables_of_interest</code> as a list.</p>
 </section>
 <section id="the-actual-api-call" class="slide level2">
 <h2>The actual API call</h2>
@@ -532,20 +517,21 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 </section>
 <section id="transforming-the-data-into-our-desired-format" class="slide level2">
 <h2>Transforming the data into our desired format</h2>
-<p>Once we retrieved our API responses, we had to manipulate them into a useable format the API call returned a list of responses that looked like this:</p>
+<p>Once we retrieved our API responses, we had to manipulate them into a useable format as the actual API response is just a list of responses that look like this:</p>
 <pre><code>&lt;openmeteo_sdk.WeatherApiResponse.WeatherApiResponse at 0x7fd78b1f7d30&gt;</code></pre>
-<p>This is obviously not very useful.</p>
+<p>This is obviously not very useful…</p>
 </section>
 <section id="open-meteo-api-documentation-and-example-code" class="slide level2">
 <h2>Open-meteo API documentation and example code</h2>
-<p>The open-meteo API does provide you with useable code for returning pandas dataframes for each city, but their code was not desirable for a few reasons: - Returned a list of dataframes for each city. - Each dataframe had no way of distinguishing it from the other dataframes meaning that if we merged them then we wouldn’t know which datapoints correspond to which cities.</p>
+<p>The open-meteo API does provide you with useable code for returning pandas dataframes for each city, but their code was not desirable for a few reasons:</p>
+<ul>
+<li>Returned a list of dataframes for each city.</li>
+<li>Each dataframe had no way of distinguishing it from the other dataframes meaning that if we merged them then we wouldn’t know which datapoints correspond to which cities.</li>
+</ul>
 </section>
 <section id="how-did-we-overcome-this" class="slide level2">
 <h2>How did we overcome this?</h2>
-<p>We wrote a custom function using the documentation that processes each response and includes a column highlighting the city it corresponds to, only then did we merge the dataframes.</p>
-</section>
-<section id="how-did-we-overcome-this-1" class="slide level2">
-<h2>How did we overcome this?</h2>
+<p>Using the documentation, we wrote a function that processes each response and adds the city name.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb8-2"><a href=""></a><span class="im">import</span> openmeteo_requests</span>
 <span id="cb8-3"><a href=""></a></span>
@@ -580,12 +566,17 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <span id="cb8-32"><a href=""></a>    daily_data[<span class="st">"precipitation_hours"</span>] <span class="op">=</span> precipitation_hours</span>
 <span id="cb8-33"><a href=""></a></span>
 <span id="cb8-34"><a href=""></a>    <span class="cf">return</span> pd.DataFrame(data<span class="op">=</span>daily_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="how-did-we-overcome-this-1" class="slide level2">
+<h2>How did we overcome this?</h2>
+<p>Now we can merge the dataframes.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a>dataframes_list <span class="op">=</span> [cf.process_response(response, geocoded_cities, i) <span class="cf">for</span> i, response <span class="kw">in</span> <span class="bu">enumerate</span>(responses)]</span>
 <span id="cb9-2"><a href=""></a>merged_df <span class="op">=</span> pd.concat(dataframes_list, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-3"><a href=""></a>merged_df.to_csv(<span class="st">"../data/weather_data.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="final-outcome" class="slide level2">
 <h2>Final Outcome</h2>
+<p>Dataframe with over 600,000 rows.</p>
 <div style="overflow-x: auto;">
 <style scoped="">
     .dataframe {
@@ -1288,11 +1279,20 @@ max
 </table>
 </div>
 </section>
+<section id="google-ngrams" class="slide level2">
+<h2>Google NGRAMS</h2>
+<p>Adding to our analysis the perception of London as a rainy city through literature Scraping method:</p>
+<ul>
+<li>Transformed the Google NGRAM graphs into json format.</li>
+<li>Create a dataframe for each query and merge them.</li>
+<li>For analysis purposes, we summed the frequencies to give a general idea of the perception per year.</li>
+</ul>
+</section>
 <section id="next-steps" class="slide level2">
 <h2>Next steps</h2>
 <ul>
 <li>Store the data as a database.</li>
-<li>Adjust the datatypes of each column to be most appropriate and efficient because 600,000 pieces of data is a lot.</li>
+<li>Adjust the datatypes of each column to be most appropriate and efficient because 6,000,000 pieces of data is a lot.</li>
 </ul>
 </section></section>
 <section id="what-have-we-found-so-far" class="title-slide slide level1 center">

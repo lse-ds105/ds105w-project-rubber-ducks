@@ -9,7 +9,7 @@ format:
 
 # "_London is a rainy city._"
 
-# Data Pipeline Diagram
+## Data Pipeline Diagram
 ```{mermaid}
 flowchart LR
     A{open-meteo} --> L((open-meteo API Requests))
@@ -38,15 +38,7 @@ flowchart LR
     V -->|Data manipulation| R(More Complex and Interactive Visualisations)
 ```
 
-# Where are we in the data pipeline journey?
-
 # How did we get the weather data?
----
-## Steps
-1. Getting our list of cities.
-2. Preparing the input to the open-meteo API call.
-3. Getting the data from the open-meteo API.
-4. Transforming the data into our desired format.
 
 ## Scraping the 20 most visited cities
 ```python
@@ -59,7 +51,9 @@ sel = Selector(response)
 
 cities = sel.xpath("//table//tr/td[2]/text()").getall()
 ```
+
 This returns a list of the top 20 most visited cities:
+
 ```
 ['Bangkok', 'Paris', 'London', 'Dubai', 'Singapore', 'Kuala Lumpur', 'New York', 'Istanbul', 'Tokyo', 'Antalya', 'Seoul', 'Osaka', 'Makkah', 'Phuket', 'Pattaya', 'Milan', 'Barcelona', 'Palma de Mallorca', 'Bali', 'Hong Kong SAR']
 ```
@@ -81,12 +75,14 @@ def geocode_cities(city_list):
 # Geocode the list of cities
 geocoded_cities = geocode_cities(cities)
 ```
+
+## Geocoding the cities
 This returns a list of dictionaries, here is one of the items as an example:
 ```
 {"city": "Paris", "latitude": 48.8534951, "longitude": 2.3483915}
 ```
 ## Preparing the open-meteo API call
-- The open-meteo API takes in a dictionary of parameters.
+The open-meteo API takes in a dictionary of parameters.
 ```python
 params = {
     "latitude": [city["latitude"] for city in geocoded_cities],
@@ -96,7 +92,6 @@ params = {
     "daily": daily_variables_of_interest,
 }
 ```
-where we defined our ```daily_variables_of_interest``` as a list.
 
 ## The actual API call
 Here we use the code provided in the open-meteo API documentation to get a list of responses for each city.
@@ -111,21 +106,21 @@ url = "https://archive-api.open-meteo.com/v1/archive"
 responses = openmeteo.weather_api(url, params=params)
 ```
 ## Transforming the data into our desired format
-Once we retrieved our API responses, we had to manipulate them into a useable format the API call returned a list of responses that looked like this:
+Once we retrieved our API responses, we had to manipulate them into a useable format as the actual API response is just a list of responses that look like this:
 ```
 <openmeteo_sdk.WeatherApiResponse.WeatherApiResponse at 0x7fd78b1f7d30>
 ```
-This is obviously not very useful.
+This is obviously not very useful...
 
 ## Open-meteo API documentation and example code
 The open-meteo API does provide you with useable code for returning pandas dataframes for each city, but their code was not desirable for a few reasons:
+
 - Returned a list of dataframes for each city.
 - Each dataframe had no way of distinguishing it from the other dataframes meaning that if we merged them then we wouldn't know which datapoints correspond to which cities.
 
 ## How did we overcome this?
-We wrote a custom function using the documentation that processes each response and includes a column highlighting the city it corresponds to, only then did we merge the dataframes.
+Using the documentation, we wrote a function that processes each response and adds the city name.
 
-## How did we overcome this?
 ```python
 import pandas as pd
 import openmeteo_requests
@@ -162,6 +157,8 @@ def process_response(response, geocoded_cities, i):
 
     return pd.DataFrame(data=daily_data)
 ```
+## How did we overcome this?
+Now we can merge the dataframes.
 
 ```python
 dataframes_list = [cf.process_response(response, geocoded_cities, i) for i, response in enumerate(responses)]
@@ -170,6 +167,8 @@ merged_df.to_csv("../data/weather_data.csv", index=False)
 ```
 
 ## Final Outcome
+Dataframe with over 600,000 rows.
+
 <div style="overflow-x: auto;">
 <style scoped>
     .dataframe {
@@ -473,9 +472,17 @@ Summary  statistics for London data:
 </table>
 </div>
 
+## Google NGRAMS
+Adding to our analysis the perception of London as a rainy city through literature
+Scraping method:
+
+- Transformed the Google NGRAM graphs into json format.
+- Create a dataframe for each query and merge them.
+- For analysis purposes, we summed the frequencies to give a general idea of the perception per year.
+
 ## Next steps
 - Store the data as a database.
-- Adjust the datatypes of each column to be most appropriate and efficient because 600,000 pieces of data is a lot.
+- Adjust the datatypes of each column to be most appropriate and efficient because 6,000,000 pieces of data is a lot.
 
 # What have we found so far?
 
