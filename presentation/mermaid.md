@@ -14,7 +14,7 @@ flowchart LR
     C --> M
     D --> M
     E --> M
-    M --> F(save as .csv files)
+    M -.- F(save as .csv files)
     N{Google NGRAMS} --> S(json format)
     S -->|scraping| T(list of frequencies for each search)
     T --> U[NGRAMS Dataframe]
