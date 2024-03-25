@@ -337,7 +337,6 @@ Dataframe with over 600,000 rows.
 </table>
 </div>
 
-## Final Outcome
 ```python
 merged_df[merged_df['city']=='London'].describe()
 ```
