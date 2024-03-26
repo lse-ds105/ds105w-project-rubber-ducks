@@ -8,7 +8,7 @@ Authors: Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 
 ## Data Pipeline Diagram
 
-<div class="mermaid">
+```mermaid
 flowchart LR
     A{open-meteo} --> L((open-meteo API Requests))
     L --> B[London Dataframe]
@@ -34,7 +34,7 @@ flowchart LR
     V -->|Data manipulation| O(London Visualisations)
     V -->|Data manipulation| Q(Descriptive Visualisations)
     V -->|Data manipulation| R(More Complex and Interactive Visualisations)
-</div>
+```
 
 # How did we get our data?
 
