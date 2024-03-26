@@ -10,13 +10,13 @@ format: revealjs
 ## Data Pipeline Diagram
 ```{mermaid}
 flowchart LR
-    A{open-meteo} --> L((open-meteo API Requests))
-    L --> B[London Dataframe]
-    L --> C[Bangkok Dataframe]
+    A{open-meteo} --> L((open-meteo API<br>Requests))
+    L --> B[London<br>Dataframe]
+    L --> C[Bangkok<br>Dataframe]
     L --> D[ ... ]
-    L --> E[Hong Kong Dataframe]
-    G{top 20 cities website} -->|scraping| H(python list of 20 cities)
-    I{OpenStreetMaps} --> J((OSM API request))
+    L --> E[Hong Kong<br>Dataframe]
+    G{top 20 cities website} -->|scraping| H(python list of<br>20 cities)
+    I{OpenStreetMaps} --> J((OSM API<br>request))
     H --> J
     J --> K(python list of dictionaries<br>for coordinates of all cities)
     K --> L
@@ -26,7 +26,7 @@ flowchart LR
     E --> M
     M -.- F(save as .csv files)
     N{Google NGRAMS} --> S(json format)
-    S -->|scraping| T[dataframe of appearance %<br>for each query]
+    S -->|scraping| T[dataframe of appearance<br>% for each query]
     T --> |sum by years| U[NGRAMS Dataframe]
     U -.- F
     M --> V[Final SQL Database]
