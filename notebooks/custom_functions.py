@@ -51,7 +51,7 @@ def runQuery(query):
     timeseries = output[0]['timeseries']
     # Creating a DataFrame with year, value, and query
     years = list(range(1940, 2020))
-    df_query = pd.DataFrame({'query': query, 'Year': years, 'Appearence %': timeseries})
+    df_query = pd.DataFrame({'query': query, 'Year': years, 'Appearances': timeseries})
 
     # Displaying the final DataFrame
     return df_query
