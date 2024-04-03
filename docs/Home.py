@@ -48,7 +48,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     c = st.container()
-    c.image(logo_path)
+    c.image("docs/DataCollection.svg")
     c.markdown("<h3><a href='Data_Collection' style='text-decoration: none;'>Data Collection</a></h3>", unsafe_allow_html=True)
     c.write("Learn about the methods we used to collect and manage our data.")
 
