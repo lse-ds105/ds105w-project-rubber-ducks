@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
 
+logo_path = "docs/images/RubberDucksLogo.png"
+
 st.set_page_config(
     page_title="Data Collection",
-    page_icon="./images/RubberDucksLogo.png",
+    page_icon=logo_path,
 )
 
 # Create header for the webpage with the name of our project and group logo.
@@ -11,7 +13,7 @@ st.set_page_config(
 col1, col2 = st.columns([1, 4])
 
 with col1:
-    st.image("./images/RubberDucksLogo.png")
+    st.image(logo_path)
 with col2:
     st.markdown("<h1 style='font-size: 80px;'>Data Collection</h1>", unsafe_allow_html=True)
 
@@ -170,11 +172,12 @@ merged_df.to_csv("../data/weather_data.csv", index=False)
 ```
 Here are the first 20 rows for your enjoyment (there are 600,000 total):
 """
-df = pd.read_csv('../data/weather_data.csv').head(20) # update file path when in the github repository.
+df = pd.read_csv('data/weather_data.csv').head(20) # update file path when in the github repository.
 
 st.dataframe(df)
 
 """
+
 ## Google NGRAMS API request
 """
 
