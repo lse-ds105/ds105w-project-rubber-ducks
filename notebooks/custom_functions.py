@@ -2,6 +2,7 @@ import pandas as pd
 import openmeteo_requests
 import requests
 import urllib
+import re
 
 def process_response(response, geocoded_cities, i):
     daily = response.Daily()
@@ -55,3 +56,51 @@ def runQuery(query):
 
     # Displaying the final DataFrame
     return df_query
+
+# Create a list of stereotypes given by google auto suggestions
+def get_auto_suggestions(city):
+    # 'Hong Kong SAR' is a term that emphasizes the administrative characteristic of the city
+    # And it is rarely used in everyday life, so in order to suit the Google Auto Suggestions
+    # it is changed into 'Hong Kong' in this function
+    adjusted_city = 'Hong Kong' if city == 'Hong Kong SAR' else city
+    
+    #There are more suggestions about weather in the second query, but some cities have no result in the second one
+    #So we use two queries to make the function better
+    queries = [f"why is {adjusted_city} so", f"why is {adjusted_city} always"]
+    all_suggestions = []
+    for query in queries:
+        url = f"https://www.google.com/complete/search?q={query}&client=firefox"
+        response = requests.get(url)
+        if response.status_code == 200:
+            suggestions = response.json()[1]
+            all_suggestions.extend(suggestions)
+        else:
+            print(f"Fail: {query}")
+    return all_suggestions
+    
+# Extract the discriptive words of the suggestions and create a dictionary
+def extract_words(cities):
+    city_stereotype = {}
+    for city in cities:
+        suggestions = get_auto_suggestions(city)
+        stereotype_list = [] 
+        for suggestion in suggestions:
+            if 'why' in suggestion.lower() and ('so' in suggestion.lower() or 'always' in suggestion.lower()):
+                suggestion_parts = {}
+                for delimiter in ['so', 'always']:
+                    suggestion_parts[delimiter] = re.split(fr'\b{delimiter}\b', suggestion)
+                    if len(suggestion_parts[delimiter]) > 1:
+                        stereotype = suggestion_parts[delimiter][1].strip()
+                        stereotype_list.append(stereotype)
+        full_stereotype_str = ', '.join(stereotype_list)
+        city_stereotype[city] = full_stereotype_str
+    return city_stereotype
+
+def filter_weather_words(suggestion_dict):
+    weather_words = ["sunny", "rainy", "windy", "cloudy", "foggy", "hot", "cold", "stormy", "humid", "dry", "wet"]
+    new_dict = {}
+    for key, words_str in suggestion_dict.items():
+        words_list = words_str.split(', ')
+        filtered_word_list = [word for word in words_list if word in weather_words]
+        new_dict[key] = filtered_word_list
+    return new_dict
