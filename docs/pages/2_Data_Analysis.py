@@ -10,11 +10,12 @@ logo_path = "docs/images/RubberDucksLogo.png"
 st.set_page_config(
     page_title="Data Analysis",
     page_icon=logo_path,
+    layout="wide"
 )
 
 # Create header for the webpage with the name of our project and group logo.
 # Use two columns to display the logo next to the text.
-col1, col2 = st.columns([1, 4])
+col1, col2 = st.columns([1, 8])
 
 with col1:
     st.image(logo_path)
@@ -67,7 +68,6 @@ selected_indicators = [
     key for value in selected_values if (key := next((k for k, v in variables_dict.items() if v == value), None))
 ]
 
-
 freq_dict = {
     'Monthly': 'M',
     'Yearly': 'Y',
@@ -105,11 +105,15 @@ df.insert(0, 'city', city_selection)
 
 st.dataframe(df)
 
-if selected_indicators != []:
+selected_indicator = st.selectbox('Indicator', selected_indicators)
+
+
+if selected_indicator != []:
     g = (
-        ggplot(df, aes(x=df.index, y=selected_indicators[0])) +
+        ggplot(df, aes(x=df.index, y=selected_indicator)) +
         geom_point() + 
-        labs(x='Date', y=variables_dict[selected_indicators[0]])
+        labs(x='Date', y=variables_dict[selected_indicator]) +
+        theme_classic()
     )
 
     fig = g.draw()
