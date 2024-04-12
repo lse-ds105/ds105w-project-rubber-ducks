@@ -5,6 +5,7 @@ logo_path = "docs/images/RubberDucksLogo.png"
 st.set_page_config(
     page_title="Rubber Ducks Weather Analysis Project",
     page_icon=logo_path,
+    layout="wide"
 )
 
 # Create header for the webpage with the name of our project and group logo.
@@ -14,7 +15,7 @@ col1, col2 = st.columns([1, 4])
 with col1:
     st.image(logo_path)
 with col2:
-    st.write("# Rubber Ducks Weather Analysis Project")
+    st.markdown("<h1 style='font-size: 160px;'>Rubber Ducks</h1>", unsafe_allow_html=True)
 
 """
 ## _Is London a rainy city?_
