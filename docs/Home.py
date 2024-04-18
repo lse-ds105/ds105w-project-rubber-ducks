@@ -10,12 +10,12 @@ st.set_page_config(
 
 # Create header for the webpage with the name of our project and group logo.
 # Use two columns to display the logo next to the text.
-col1, col2 = st.columns([1, 4])
+col1, col2 = st.columns([1, 5])
 
 with col1:
     st.image(logo_path)
 with col2:
-    st.markdown("<h1 style='font-size: 160px;'>Rubber Ducks</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-size: 140px;'>Rubber Ducks</h1>", unsafe_allow_html=True)
 
 """
 ## _Is London a rainy city?_
