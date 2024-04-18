@@ -422,15 +422,15 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
 <p></p><figure class=""><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
-    A{open-meteo} --&gt; L((open-meteo API Requests))
-    L --&gt; B[London Dataframe]
-    L --&gt; C[Bangkok Dataframe]
+    A{open-meteo} --&gt; L((open-meteo API&lt;br&gt;Requests))
+    L --&gt; B[London&lt;br&gt;Dataframe]
+    L --&gt; C[Bangkok&lt;br&gt;Dataframe]
     L --&gt; D[ ... ]
-    L --&gt; E[Hong Kong Dataframe]
-    G{top 20 cities website} --&gt;|scraping| H(python list of 20 cities)
-    I{OpenStreetMaps} --&gt; J((OSM API request))
+    L --&gt; E[Hong Kong&lt;br&gt;Dataframe]
+    G{top 20 cities website} --&gt;|scraping| H(python list of&lt;br&gt;20 cities)
+    I{OpenStreetMaps} --&gt; J((OSM API&lt;br&gt;request))
     H --&gt; J
-    J --&gt; K(python list of dictionaries for coordinates of all cities)
+    J --&gt; K(python list of dictionaries&lt;br&gt;for coordinates of all cities)
     K --&gt; L
     B --&gt; M[Weather Dataframe:&lt;br&gt;each row is a time and city]
     C --&gt; M
@@ -438,14 +438,14 @@ Oliver Gregory, Sofia Giorgianni, Noemie Dunand-Wisdom
     E --&gt; M
     M -.- F(save as .csv files)
     N{Google NGRAMS} --&gt; S(json format)
-    S --&gt;|scraping| T[dataframe of appearance % for each query]
+    S --&gt;|scraping| T[dataframe of appearance&lt;br&gt;% for each query]
     T --&gt; |sum by years| U[NGRAMS Dataframe]
     U -.- F
     M --&gt; V[Final SQL Database]
     U --&gt; V
     V --&gt;|Data manipulation| O(London Visualisations)
     V --&gt;|Data manipulation| Q(Descriptive Visualisations)
-    V --&gt;|Data manipulation| R(More Complex and Interactive Visualisations)
+    V --&gt;|Data manipulation| R(More Complex and Interactive&lt;br&gt;Visualisations)
 </pre>
 </div>
 <p></p></figure><p></p>
