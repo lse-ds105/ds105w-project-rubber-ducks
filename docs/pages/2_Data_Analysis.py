@@ -65,11 +65,13 @@ col1, col2, col3 = st.columns(3)
 
 with col1: 
     city_selection_de = st.selectbox('City', cities)
-    start_date_selection_de = st.date_input("Start date", value=datetime.date(1940, 1, 1), min_value=datetime.date(1940, 1, 1), max_value=datetime.date(2023, 12, 30))
+    start_date_selection_de = st.date_input("Start date", value=datetime.datetime(1940, 1, 1), min_value=datetime.datetime(1940, 1, 1), max_value=datetime.datetime(2023, 12, 30))
+
+end_date_selection_de_min = start_date_selection_de + datetime.timedelta(days=1)
 
 with col2:
     frequency_selection_de = st.selectbox("Frequency", ['5 Yearly', 'Yearly', 'Monthly', 'Daily'])
-    end_date_selection_de = st.date_input("End date", value=datetime.date(2023, 12, 31), min_value=datetime.date(1940, 1, 2), max_value=datetime.date(2023, 12, 31))
+    end_date_selection_de = st.date_input("End date", value=datetime.date(2023, 12, 31), min_value=end_date_selection_de_min, max_value=datetime.date(2023, 12, 31))
 
 with col3:
     selected_keys_de = st.multiselect("Indicators", list(variables_dict.keys()), default=list(variables_dict.keys())[0])
@@ -136,11 +138,13 @@ col1, col2, col3 = st.columns(3)
 
 with col1: 
     city_selection_dv = st.selectbox('City', cities, key='dv_city')
-    start_date_selection_dv = st.date_input("Start date", value=datetime.date(1940, 1, 1), min_value=datetime.date(1940, 1, 1), max_value=datetime.date(2023, 12, 30), key='dv_start')
+    start_date_selection_dv = st.date_input("Start date", value=datetime.datetime(1940, 1, 1), min_value=datetime.datetime(1940, 1, 1), max_value=datetime.datetime(2023, 12, 30), key='dv_start')
+
+end_date_selection_dv_min = start_date_selection_dv + datetime.timedelta(days=1)
 
 with col2:
     frequency_selection_dv = st.selectbox("Frequency", ['5 Yearly', 'Yearly', 'Monthly', 'Daily'], key='dv_freq')
-    end_date_selection_dv = st.date_input("End date", value=datetime.date(2023, 12, 31), min_value=datetime.date(1940, 1, 2), max_value=datetime.date(2023, 12, 31), key='dv_end')
+    end_date_selection_dv = st.date_input("End date", value=datetime.date(2023, 12, 31), min_value=end_date_selection_dv_min, max_value=datetime.date(2023, 12, 31), key='dv_end')
 
 with col3:
     selected_key_dv = st.selectbox("Indicators", list(variables_dict.keys()), key='dv_indicator')
@@ -192,4 +196,3 @@ fig = g.draw()
 col1, col2, col3 = st.columns([1,6,1]) # Use columns to adjust size of plot on website.
 with col2:
     st.pyplot(fig)
-
