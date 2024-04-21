@@ -62,5 +62,5 @@ with col2:
 with col3:
     c = st.container()
     c.image(logo_path)
-    c.markdown("<h3><a href='Key_Insights' style='text-decoration: none;'>Key Insights</a></h3>", unsafe_allow_html=True)
     c.write("Understand the key insights of the data and what it means for our project.")
+    c.markdown("<h3><a href='Key_Insights' style='text-decoration: none;'>Key Insights</a></h3>", unsafe_allow_html=True)

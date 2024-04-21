@@ -85,7 +85,7 @@ st.graphviz_chart(
 Our final dataset comes from three main sources:
 - [OpenMeteo API](https://open-meteo.com/en/docs/historical-weather-api/)
 - [Google NGRAMS API](https://books.google.com/ngrams/)
-- [Google auto-suggestions API]() ** no link yet
+- Google auto-suggestions API
 """
 
 """
