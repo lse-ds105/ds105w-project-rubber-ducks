@@ -180,6 +180,66 @@ st.dataframe(df)
 """
 
 ## Google NGRAMS API request
+
+NGRAM queries on Google NGRAMS allow the user to see the percentage of times a query appears amongts all the words and phrases accounted for in the books available on Google Books. In our case, we want to retrieve data on the perceptions of rain, sun and wind in London.
+
+### Step 1
+
+We started off by making a list of the queries we wanted to run for each weather variable: rain, sun and wind. We alternated between capitalised and uncapitalised letters where it was reasonable to do so, in order to collect as much relevant data as possible.
+
+```python
+queries_rain = ["London rain", "London Rain", "rainy London", "rain in London", "Rain in London", "raining in London", "Raining in London"]
+queries_sun = ["London sun", "London Sun", "sunny London", "sun in London", "Sun in London"]
+queries_wind = ["London wind", "London Wind", "windy London", "wind in London", "Wind in London"]
+```
+
+### Step 2
+
+Using a ```for``` loop and the custom ```runQuery``` function, we extracted the appearance percentages from 1940 to 2019 of each query and converted the response into a pandas dataframe as it initally came as several JSONs.
+
+```python
+def runQuery(query):
+    # converting a regular string to  the standard URL format  
+    query_url = urllib.parse.quote(query) 
+
+    # creating the URL 
+    url = 'https://books.google.com/ngrams/json?content=' + query_url +'&year_start=1940&corpus=en-2019&smoothing=3' 
+    response = requests.get(url) 
+
+    output = response.json()
+
+    timeseries = output[0]['timeseries']    # Extracting the timeseries
+    years = list(range(1940, 2020))     # Creating a DataFrame with year, value, and query
+    df_query = pd.DataFrame({'query': query, 'Year': years, 'Absolute Appearance %': timeseries})
+
+    return df_query
+```
+
+```python
+NGRAMSrain_df = pd.DataFrame()
+queries_rain = ["London rain", "London Rain", "rainy London", "rain in London", "Rain in London", "raining in London", "Raining in London"]
+
+for query in queries_rain:
+    df_queries_rain = cf.runQuery(query)
+    NGRAMSrain_df = pd.concat([NGRAMSrain_df, df_queries_rain])
+```
+
+We end up with 3 dataframes: NGRAMSrain_df, NGRAMSsun_df and NGRAMSwind_df.
+
+**NGRAMSrain_df**
+
+### Step 3
+In each dataframe, we summed up all different queries' perceptions for each year. This enabled us to have a general perception for a given year. The associated new dataframes were named NGRAMSrain_df_grouped, NGRAMSsun_df_grouped and NGRAMSwind_df_grouped.
+
+### Step 4
+We created a new column which represents the relative appearance percentages. This was done by dividing percentages in each row by the first row. The column brings a clearer image of the change in these perceptions.
+
+**DATAFRAME RAIN WITH RELATIVE APPEARANCES**
+
+### Step 5
+We merged the 3 dataframes into one general perception dataframe NGRAMS_df_grouped. It organises data on absolute and relative appearance percentages for rain, wind, and sun queries from 1940 to 2019.
+
+**FINAL DATAFRAME**
 """
 
 """
