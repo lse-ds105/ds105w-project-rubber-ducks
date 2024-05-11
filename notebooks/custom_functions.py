@@ -36,7 +36,7 @@ def process_response(response, geocoded_cities, i):
 
     return pd.DataFrame(data=daily_data)
 
-def runQuery(query):
+def get_NGRAMS(query):
     # converting a regular string to  the standard URL format  
     query_url = urllib.parse.quote(query) 
 
@@ -52,7 +52,7 @@ def runQuery(query):
     timeseries = output[0]['timeseries']
     # Creating a DataFrame with year, value, and query
     years = list(range(1940, 2020))
-    df_query = pd.DataFrame({'query': query, 'Year': years, 'Appearances': timeseries})
+    df_query = pd.DataFrame({'query': query, 'year': years, 'appearances': timeseries})
 
     # Displaying the final DataFrame
     return df_query

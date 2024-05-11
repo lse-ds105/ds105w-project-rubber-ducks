@@ -51,6 +51,11 @@ st.graphviz_chart(
     O [label="London Insights: Explore unique visualizations\nfor the vibrant city of London"]
     Q [label="General Trends: Uncover insights and trends\nacross the top 20 most visited cities"]
     W [label="Save as a JSON"]
+
+    P [label="Google autosuggestions API"]
+    R [label="Additional perception insights"]
+    Y [label="Save as a JSON"]
+
     
     A -> L
     L -> B
@@ -77,6 +82,9 @@ st.graphviz_chart(
     V -> Q
     K -> W [style=dotted]
     K -> X
+    K -> P
+    P -> Y
+    Y -> R
 }
 """
 )
@@ -180,8 +188,152 @@ st.dataframe(df)
 """
 
 ## Google NGRAMS API request
+
+NGRAM queries on Google NGRAMS allow the user to see the percentage of times a query appears amongts all the words and phrases accounted for in the books available on Google Books. In our case, we want to retrieve data on the perceptions of rain, sun and wind in London.
+
+### Step 1
+
+We started off by making a list of the queries we wanted to run for each weather variable: rain, sun and wind. We alternated between capitalised and uncapitalised letters where it was reasonable to do so, in order to collect as much relevant data as possible.
+
+```python
+queries_rain = ["London rain", "London Rain", "rainy London", "rain in London", "Rain in London", "raining in London", "Raining in London"]
+queries_sun = ["London sun", "London Sun", "sunny London", "sun in London", "Sun in London"]
+queries_wind = ["London wind", "London Wind", "windy London", "wind in London", "Wind in London"]
+```
+
+### Step 2
+
+We created the custom ```get_NGRAMS``` function, which extracts the appearance percentages from 1940 to 2019 for a single query and converts the response into a pandas dataframe as it initally comes in JSON format.
+
+```python
+def get_NGRAMS(query):
+    # converting a regular string to  the standard URL format  
+    query_url = urllib.parse.quote(query) 
+
+    # creating the URL 
+    url = 'https://books.google.com/ngrams/json?content=' + query_url +'&year_start=1940&corpus=en-2019&smoothing=3' 
+    response = requests.get(url) 
+
+    # extracting the json data from the response we got 
+    output = response.json()
+
+    # Extracting the timeseries
+    timeseries = output[0]['timeseries']
+
+    # Creating a DataFrame with year, value, and query
+    years = list(range(1940, 2020))
+    df_query = pd.DataFrame({'query': query, 'year': years, 'appearances': timeseries})
+
+    return df_query
+```
+
+We then used a ```for``` loop to iterate through each query before merging each query dataframe into one.
+
+```python
+NGRAMSrain_df = pd.DataFrame()
+queries_rain = ["London rain", "London Rain", "rainy London", "rain in London", "Rain in London", "raining in London", "Raining in London"]
+
+for query in queries_rain:
+    df_queries_rain = cf.get_NGRAMS(query)
+    NGRAMSrain_df = pd.concat([NGRAMSrain_df, df_queries_rain])
+```
+
+We end up with 3 dataframes: NGRAMSrain_df, NGRAMSsun_df and NGRAMSwind_df.
+
+### Step 3
+In each dataframe, we summed up all different queries' appearances for each year. This enabled us to have a general perception for a given year. The associated new dataframes were named NGRAMSrain_df_grouped, NGRAMSsun_df_grouped and NGRAMSwind_df_grouped.
+
+### Step 4
+We then created a new column which represents the relative appearance percentages. This was done by dividing percentages in each row by the first row. The column brings a clearer image of the change in these perceptions.
+
+### Step 5
+We merged the 3 dataframes into one general perception dataframe NGRAMS_df_grouped. It organises data on absolute and relative appearance percentages for rain, wind, and sun queries from 1940 to 2019.
+
+"""
+
+df = pd.read_csv('data/perception_data.csv')
+
+st.dataframe(df)
+
+"""
+Absolute percentages are so low that they are ≈ 0.
 """
 
 """
 ## Google auto-suggestions API request
+
+After getting the top 20 most vistied cities, we can get the auto suggestions for each city from google to see what stereotypes people have about that city using the requests library.
+
+### Step 1
+
+We use two queries in this function to make the result richer.
+
+**TIP:**
+ 'Hong Kong SAR' is a term that emphasizes the administrative characteristic of the city, and it is rarely used in everyday life. Therefore, it is changed into 'Hong Kong' in this function to suit the spoken language.
+
+```python
+import requests
+
+def get_auto_suggestions(city):
+    adjusted_city = 'Hong Kong' if city == 'Hong Kong SAR' else city
+    queries = [f"why is {adjusted_city} so", f"why is {adjusted_city} always"]
+    
+    all_suggestions = []
+    for query in queries:
+        url = f"https://www.google.com/complete/search?q={query}&client=firefox"
+        response = requests.get(url)
+        if response.status_code == 200:
+            suggestions = response.json()[1]
+            all_suggestions.extend(suggestions)
+        else:
+            print(f"Fail: {query}")
+    return all_suggestions
+```
+
+This returns a list of simple sentences that needs to be processed. Here is the example of London:
+
+```python
+['why is london so expensive', 'why is london so dangerous', 'why is london so popular', 'why is london so big', 'why is london so foggy', 'why is london so busy today', 'why is london so dirty', 'why is london so cold', 'why is london so cloudy', 'why is london so rainy', 'why is london always cloudy', 'why is london always rainy', 'why is london always cold', 'why is london always foggy', 'why is london always grey', 'why is london always raining', 'why is london always so cloudy', 'why is london always windy', 'why is london always gray', 'why is london always hotter']
+```
+
+### Step 2
+
+We then need to scrape all the 20 cities and extract the discriptive words in such lists which makes the output neat and clean. In this function, the ```re``` library is used to locate the position of those discriptive words.
+
+```python
+import re
+
+def extract_words(cities):
+    city_stereotype = {}
+    for city in cities:
+        suggestions = get_auto_suggestions(city)
+        stereotype_list = [] 
+        for suggestion in suggestions:
+            if 'why' in suggestion.lower() and ('so' in suggestion.lower() or 'always' in suggestion.lower()):
+                suggestion_parts = {}
+                for delimiter in ['so', 'always']:
+                    suggestion_parts[delimiter] = re.split(fr'\b{delimiter}\b', suggestion)
+                    if len(suggestion_parts[delimiter]) > 1:
+                        stereotype = suggestion_parts[delimiter][1].strip()
+                        stereotype_list.append(stereotype)
+        full_stereotype_str = ', '.join(stereotype_list)
+        city_stereotype[city] = full_stereotype_str
+    return city_stereotype
+```
+
+### Step 3
+
+Finally, we use this function to filter the words that are about weather before returning a dictionary that only contains the words we are interested in.
+
+```python
+def filter_weather_words(suggestion_dict):
+    weather_words = ["sunny", "rainy", "windy", "cloudy", "foggy", "hot", "cold", "stormy", "humid", "dry", "wet"]
+    new_dict = {}
+    for key, words_str in suggestion_dict.items():
+        words_list = words_str.split(', ')
+        filtered_word_list = [word for word in words_list if word in weather_words]
+        new_dict[key] = filtered_word_list
+    return new_dict
+```
+
 """
