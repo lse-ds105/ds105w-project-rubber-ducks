@@ -56,7 +56,7 @@ with col1:
 with col2:
     c = st.container()
     c.image(logo_path)
-    c.markdown("<h3><a href='Data_Analysis' style='text-decoration: none;'>Data Analysis</a></h3>", unsafe_allow_html=True)
+    c.markdown("<h3><a href='Data_Visualiser' style='text-decoration: none;'>Data Analysis</a></h3>", unsafe_allow_html=True)
     c.write("Explore the different ways we visualised the data.")
 
 with col3:
