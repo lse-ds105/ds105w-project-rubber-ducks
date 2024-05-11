@@ -184,7 +184,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     '''
-    In this graph we can see that London have very similar historical rainfall to Paris which makes sense given their geographic closeness. However, we see that London still does not top the rankings for rainiest city in Europe.
+    In this graph we can see that London has had very similar historical rainfall to Paris which makes sense given their geographic closeness. However, we see that London still does not top the rankings for rainiest city in Europe.
     '''
 
 with col2:
