@@ -51,6 +51,11 @@ st.graphviz_chart(
     O [label="London Insights: Explore unique visualizations\nfor the vibrant city of London"]
     Q [label="General Trends: Uncover insights and trends\nacross the top 20 most visited cities"]
     W [label="Save as a JSON"]
+
+    P [label="Google autosuggestions API"]
+    R [label="Additional perception insights"]
+    Y [label="Save as a JSON"]
+
     
     A -> L
     L -> B
@@ -77,6 +82,9 @@ st.graphviz_chart(
     V -> Q
     K -> W [style=dotted]
     K -> X
+    K -> P
+    P -> Y
+    Y -> R
 }
 """
 )

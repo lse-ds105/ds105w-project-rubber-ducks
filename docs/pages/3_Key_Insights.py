@@ -1,5 +1,4 @@
 import streamlit as st
-
 import pandas as pd
 import plotly.express as px
 from sqlalchemy import create_engine
@@ -49,7 +48,7 @@ with col1:
 with col2:
     st.markdown(
         '''
-        This graph shows that in the 1940s, the rainy London stereotype had a relatively low prevalence. It then experienced some fluctuation, with a peak around 1960; however, starting from around the year 2000, there was a significant rise in the prevalence of this stereotype, reaching its highest point in recent times just before 2020. The overall shape of the graph suggests that while the stereotype has existed for a long time, it has become much more prominent and widespread in recent decades, particularly from the turn of the 21st century onwards. This could potentially be a result of various factors, such as media representation, cultural perceptions, or even actual weather patterns in London during this period.
+        This graph shows that in the 1940s, the rainy London stereotype had a relatively low prevalence. It then experienced some fluctuation, with a peak around 1965; however, starting from around the year 2000, there was a significant rise in the prevalence of this stereotype, reaching its highest point in recent times around 2010. The overall shape of the graph suggests that while the stereotype has existed for a long time, it has become much more prominent and widespread in recent decades, particularly from the turn of the 21st century onwards. This could potentially be a result of various factors, such as media representation, cultural perceptions, or even actual weather patterns in London during this period.
         '''
     )
 
@@ -108,7 +107,7 @@ with col1:
 
 with col2:
     '''
-    Here we can see that the average daily hours of rainfall in London since 1940 is just under 4 hours, which pales in comparison to cities such as Singapore and Phuket who are much closer to an average of 10 hours a day. This implies that justifying the perception of London as a rainy city by suggesting that it doesn't rain heavily but just drizzles all the time is also an invalid argument given it is not even in the top 10 of these most visited cities.
+    Here we can see that the average daily hours of rainfall in London since 1940 is just under 4 hours, which pales in comparison to cities such as Singapore and Phuket which are much closer to an average of 10 hours a day. This implies that justifying the perception of London as a rainy city by suggesting that it doesn't rain heavily but just drizzles all the time is also an invalid argument given it is not even in the top 10 of these most visited cities.
     '''
 
 st.divider()
@@ -212,5 +211,5 @@ st.divider()
 st.divider()
 
 '''
-
+The question we set out to answer with this project was whether or not London is a rainy city, and while it certainly rains here (often at the most inconvenient times like on the way to class or when you planned to go to the park), it seems its reputation as a rainy city is probably unjustified. Through our research we found that the stereotype of London as a rainy city has became most prominent during the 2000s, but in reality, London's weather patterns in that period were less rainy and more sunny compared to at other points in its history. We also found that out of the top 20 most visited cities worldwide, London does not stand out as a particularly rainy city being only 16th out of 20 in terms of the average amount of rainfall. So maybe its time for us to collectively hang up the notion that London is an outlier in terms of raininess and think about the things that really stand out about this city.
 '''

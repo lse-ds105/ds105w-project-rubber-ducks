@@ -55,12 +55,12 @@ with col1:
 
 with col2:
     c = st.container()
-    c.image(logo_path)
+    c.image("docs/images/london_rain_perception.svg")
     c.markdown("<h3><a href='Data_Visualiser' style='text-decoration: none;'>Data Analysis</a></h3>", unsafe_allow_html=True)
     c.write("Explore the different ways we visualised the data.")
 
 with col3:
     c = st.container()
-    c.image(logo_path)
-    c.write("Understand the key insights of the data and what it means for our project.")
+    c.image("docs/images/precipitation_hours_bar.svg")
     c.markdown("<h3><a href='Key_Insights' style='text-decoration: none;'>Key Insights</a></h3>", unsafe_allow_html=True)
+    c.write("Understand the key insights of the data and what it means for our project.")
