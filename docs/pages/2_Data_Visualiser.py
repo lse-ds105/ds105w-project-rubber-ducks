@@ -54,7 +54,7 @@ freq_dict = {
     '5 Yearly': '5Y'
 }
 
-explorerTab, visualiserTab = st.tabs(["Explorer", "Visualiser"])
+explorerTab, visualiserTab, wordcloudTab = st.tabs(["Explorer", "Visualiser", "Wordcloud"])
 
 with explorerTab:
     """
@@ -201,3 +201,12 @@ with visualiserTab:
     col1, col2, col3 = st.columns([1,6,1]) # Use columns to adjust size of plot on website.
     with col2:
         st.pyplot(fig)
+
+with wordcloudTab:
+    city_wc = st.selectbox("Select a city to view its perception word cloud from Google Autosuggestions", (cities), key='wc_city')
+
+    st.write(f"# Wordcloud for {city_wc}")
+
+    image_path = f"./docs/images/wordclouds/{city_wc}.png"
+
+    st.image(image_path, use_column_width=True)
