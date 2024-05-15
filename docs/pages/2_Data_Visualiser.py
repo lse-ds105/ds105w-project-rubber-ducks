@@ -54,6 +54,7 @@ freq_dict = {
     '5 Yearly': '5Y'
 }
 
+# Create three tabs: one for each tool
 explorerTab, visualiserTab, wordcloudTab = st.tabs(["Explorer", "Visualiser", "Wordcloud"])
 
 with explorerTab:
