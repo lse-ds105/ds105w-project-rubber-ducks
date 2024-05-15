@@ -1,9 +1,12 @@
+# import necessary libraries
 import pandas as pd
 import openmeteo_requests
 import requests
 import urllib
 import re
 
+# Function for processing the weather api response
+# Made using the documentation for the openmeteo_api
 def process_response(response, geocoded_cities, i):
     daily = response.Daily()
     temperature_2m_max = daily.Variables(0).ValuesAsNumpy()
@@ -24,6 +27,7 @@ def process_response(response, geocoded_cities, i):
         ).date
     }
 
+    # Creating the data frame from all the series
     daily_data["city"] = geocoded_cities[i]['city']
     daily_data["temperature_2m_max"] = temperature_2m_max
     daily_data["temperature_2m_min"] = temperature_2m_min
@@ -36,6 +40,7 @@ def process_response(response, geocoded_cities, i):
 
     return pd.DataFrame(data=daily_data)
 
+# Function for getting and processing the NGRAMS data
 def get_NGRAMS(query):
     # converting a regular string to  the standard URL format  
     query_url = urllib.parse.quote(query) 
@@ -78,12 +83,15 @@ def get_auto_suggestions(city):
             print(f"Fail: {query}")
     return all_suggestions
     
-# Extract the discriptive words of the suggestions and create a dict
+# Extract the descriptive words of the suggestions and create a dict
 def extract_words(cities):
+    # Create an empty dictionary
     city_stereotype = {}
+
+    # Loop over each city to create a dictionary of lists
     for city in cities:
         suggestions = get_auto_suggestions(city)
-        stereotype_list = [] 
+        stereotype_list = [] # Create an empty list
         for suggestion in suggestions:
             if 'why' in suggestion.lower() and ('so' in suggestion.lower() or 'always' in suggestion.lower()):
                 for delimiter in ['so', 'always']:
@@ -93,6 +101,7 @@ def extract_words(cities):
                         stereotype_list.append(stereotype)
         full_stereotype_str = ', '.join(stereotype_list)
         city_stereotype[city] = full_stereotype_str
+
     # Split the string into a list of words/phrases for each city
     for city, stereotypes in city_stereotype.items():
         city_stereotype[city] = [word.strip() for word in stereotypes.split(',') if word.strip()]
