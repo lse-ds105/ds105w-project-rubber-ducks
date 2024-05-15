@@ -111,6 +111,6 @@ def filter_weather_words(suggestion_dict):
 def custom_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
     weather_words = ["sunny", "rainy","raining", "windy", "cloudy", "foggy", "hot", "cold", "stormy", "humid", "dry", "wet", "hazy"]
     if word.lower() in weather_words:
-        return 'blue'
+        return '#f26d34'
     else:
-        return 'grey'
+        return '#fcd21c'
