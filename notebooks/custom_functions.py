@@ -78,7 +78,7 @@ def get_auto_suggestions(city):
             print(f"Fail: {query}")
     return all_suggestions
     
-# Extract the discriptive words of the suggestions and create a dictionary
+# Extract the discriptive words of the suggestions and create a dict
 def extract_words(cities):
     city_stereotype = {}
     for city in cities:
@@ -86,14 +86,16 @@ def extract_words(cities):
         stereotype_list = [] 
         for suggestion in suggestions:
             if 'why' in suggestion.lower() and ('so' in suggestion.lower() or 'always' in suggestion.lower()):
-                suggestion_parts = {}
                 for delimiter in ['so', 'always']:
-                    suggestion_parts[delimiter] = re.split(fr'\b{delimiter}\b', suggestion)
-                    if len(suggestion_parts[delimiter]) > 1:
-                        stereotype = suggestion_parts[delimiter][1].strip()
+                    parts = re.split(fr'\b' + re.escape(delimiter) + r'\b', suggestion, flags=re.IGNORECASE)
+                    if len(parts) > 1:
+                        stereotype = parts[1].strip()
                         stereotype_list.append(stereotype)
         full_stereotype_str = ', '.join(stereotype_list)
         city_stereotype[city] = full_stereotype_str
+    # Split the string into a list of words/phrases for each city
+    for city, stereotypes in city_stereotype.items():
+        city_stereotype[city] = [word.strip() for word in stereotypes.split(',') if word.strip()]
     return city_stereotype
 
 def filter_weather_words(suggestion_dict):
@@ -104,3 +106,11 @@ def filter_weather_words(suggestion_dict):
         filtered_word_list = [word for word in words_list if word in weather_words]
         new_dict[key] = filtered_word_list
     return new_dict
+
+# Custom color function for word clouds
+def custom_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+    weather_words = ["sunny", "rainy","raining", "windy", "cloudy", "foggy", "hot", "cold", "stormy", "humid", "dry", "wet", "hazy"]
+    if word.lower() in weather_words:
+        return 'blue'
+    else:
+        return 'grey'
