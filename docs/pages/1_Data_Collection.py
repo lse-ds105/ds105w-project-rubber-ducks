@@ -53,7 +53,7 @@ st.graphviz_chart(
     W [label="Save as a JSON"]
 
     P [label="Google autosuggestions API"]
-    R [label="Additional perception insights"]
+    R [label="Perception Wordclouds"]
     Y [label="Save as a JSON"]
 
     
