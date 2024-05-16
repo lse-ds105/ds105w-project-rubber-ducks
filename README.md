@@ -34,3 +34,25 @@ Use ```pip``` to install the ```requirements.txt```.
 python -m pip install -r requirements.txt
 ```
 You should now be ready to use our repository.
+
+## How to recreate the work we produced...
+
+After completing the setup, you should have all the necessary packages installed to run all of our notebooks and scripts.
+
+### Data Collection and Preparation
+
+To recreate our data collection process, open the NB01-Data_Collection notebook and hit 'run all' or if you'd prefer, run each cell separately in order.
+
+Once that is complete, you are 95% of the way there. The final step is to follow the instructions at the bottom of the notebook that explain how we transformed our CSV data into a SQL database.
+
+### Data Analysis
+
+The next stage is to recreate our data analysis which is done by running our NB02-Data_Analysis notebook. This is where all the main plots for our site and a few others that didn't quite make the cut were initially drawn up.
+
+### Website building
+
+We built our website using Streamlit which is a python based web framework for producing data forward websites and dashboards. The home page is named 'Home.py' and can be found in the docs folder. The additional pages are stored in a subfolder called 'pages' as per the streamlit documentation. When running the website locally, you can use the terminal command ```streamlit run docs/Home.py```. This is what allowed us to view the site and make changes in real time before deploying it once we were ready.
+
+---
+
+And that's it 🤷🏼‍♂️. We hope you enjoy looking at our work as much as we enjoyed making it!
